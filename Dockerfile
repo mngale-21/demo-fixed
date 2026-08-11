@@ -4,7 +4,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Hatua ya pili: Run mradi
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 COPY --from=build /target/*.jar demo.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","demo.jar"]
