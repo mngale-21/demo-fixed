@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Results | Amateur Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--primary-dark); 
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .upload-container {
+            background: var(--secondary-dark);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header i { font-size: 3rem; color: var(--accent-blue); margin-bottom: 15px; }
+        .header h1 { margin: 0; font-size: 1.8rem; }
+        .header p { color: var(--text-dim); font-size: 0.9rem; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-dim); }
+
+        select, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-upload {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-blue);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-upload:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { color: var(--accent-blue); }
+
+        /* Alert Styles */
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem; }
+        .alert-error { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }
+
+        @media (max-width: 600px) {
+            body { padding: 20px; min-height: unset; }
+            .upload-container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        <div class="header">
+            <i class="fas fa-file-excel"></i>
+            <h1>Upload Results</h1>
+            <p>Upload Tanzania Secondary Results (O-Level) via Excel</p>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> Tafadhali chagua file na aina ya mtihani!
+        </div>
+
+        <form th:action="@{/admin/perform_upload}" method="post" enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label>1. Select Examination Period</label>
+                <select name="examType" required>
+                    <option value="">-- Choose Period --</option>
+                    <option value="MIDTERM_MARCH">MIDTERM - MARCH</option>
+                    <option value="TERMINAL">TERMINAL (JUNE)</option>
+                    <option value="MIDTERM_SEPTEMBER">MIDTERM - SEPTEMBER</option>
+                    <option value="ANNUAL">ANNUAL (DECEMBER)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>2. Choose Excel File (.xlsx)</label>
+                <input type="file" name="file" accept=".xlsx, .xls" required>
+            </div>
+
+            <button type="submit" class="btn-upload">
+                <i class="fas fa-cloud-upload-alt"></i> Upload and Process
+            </button>
+        </form>
+
+        <a th:href="@{/admin_dashboard}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: var(--text-dim);">
+            <strong>Note:</strong> Excel columns must be: <br>
+            A: Username (Reg No) | B: Course Name | C: Marks
+        </div>
+    </div>
+
+</body>
+</html>

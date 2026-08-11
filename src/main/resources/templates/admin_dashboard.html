@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Amateur Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;    /* Deep Navy Background */
+            --secondary-dark: #1e293b;  /* Sidebar Navy */
+            --accent-blue: #38bdf8;     /* Sky Blue */
+            --text-main: #f1f5f9;       
+            --text-dim: #94a3b8;        
+        }
+
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            background: var(--primary-dark); 
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        /* Sidebar Style */
+        #sidebar { 
+            width: 250px; 
+            height: 100vh; 
+            background: var(--secondary-dark); 
+            position: fixed; 
+            left: 0; 
+            transition: 0.3s; 
+            padding-top: 20px;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #sidebar h2 { 
+            text-align: center; 
+            color: var(--accent-blue); 
+            letter-spacing: 1px;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+        }
+
+        #sidebar a { 
+            padding: 15px 25px; 
+            text-decoration: none; 
+            color: var(--text-dim); 
+            display: block; 
+            transition: 0.3s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        #sidebar a i { margin-right: 12px; width: 20px; text-align: center; }
+
+        #sidebar a:hover { 
+            background: rgba(56, 189, 248, 0.1); 
+            color: var(--accent-blue); 
+            border-left: 4px solid var(--accent-blue); 
+        }
+
+        /* Main Content */
+        #main { 
+            margin-left: 250px; 
+            padding: 50px; 
+            width: 100%; 
+            transition: 0.3s; 
+        }
+
+        .toggle-btn { 
+            background: var(--secondary-dark); 
+            color: var(--accent-blue); 
+            border: 1px solid rgba(56, 189, 248, 0.3); 
+            padding: 10px 15px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            margin-bottom: 40px;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 700; margin: 0; }
+        .subtitle { color: var(--text-dim); margin-top: 10px; font-size: 1.1rem; }
+
+        /* Sidebar Toggling */
+        .sidebar-hidden #sidebar { left: -250px; }
+        .sidebar-hidden #main { margin-left: 0; }
+        
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 20px 0; }
+
+        /* ===== RESPONSIVE: MOBILE/TABLET ===== */
+        @media (max-width: 768px) {
+            #sidebar {
+                left: -250px;
+                z-index: 999;
+                box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            }
+            #main { margin-left: 0; padding: 25px; }
+            /* Reuse the existing toggle() function: on mobile it now REVEALS the sidebar */
+            .sidebar-hidden #sidebar { left: 0; }
+            .sidebar-hidden #main { margin-left: 0; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h2><i class="fas fa-bolt"></i> AMATEUR PRO</h2>
+        <hr>
+        
+        <a href="#"><i class="fas fa-th-large"></i> Dashboard</a>
+        
+        <a th:href="@{/admin/upload_results}">
+            <i class="fas fa-file-csv"></i> upload_results
+        </a>
+
+        <a th:href="@{/admin/upload_page}">
+            <i class="fas fa-user-plus"></i> Register Student
+        </a>
+<a th:href="@{/admin/attendance_dashboard}" class="nav-link">
+        <i class="fas fa-calendar-check"></i> Attendance Sync
+    </a>
+        <a th:href="@{/logout}" style="color: #f87171; margin-top: 200px;">
+            <i class="fas fa-power-off"></i> Logout
+        </a>
+    </div>
+
+    <div id="main">
+        <button class="toggle-btn" onclick="toggle()">☰ Menu</button>
+        
+        <div class="welcome-section">
+            <h1>Welcome Admin!</h1>
+            <p class="subtitle">Use the sidebar menu to manage results and register new students.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggle() { document.body.classList.toggle('sidebar-hidden'); }
+    </script>
+</body>
+</html>

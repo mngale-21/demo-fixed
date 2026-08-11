@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Attendance | Amateur System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --text-dim: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f1f5f9; padding: 30px; }
+        
+        /* NEW: Back Button Styling */
+        .back-nav {
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+        }
+        .btn-back {
+            text-decoration: none;
+            color: var(--primary-bg);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-back:hover {
+            color: var(--accent-color);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--accent-color);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background-color: #f8fafc;
+            color: var(--text-dim);
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: white;
+        }
+        .status-present { background: var(--success-color); }
+        .status-absent { background: var(--danger-color); }
+        .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .container { padding: 18px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header > div:last-child { text-align: left; }
+            th, td { padding: 10px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="back-nav">
+        <a th:href="@{/student_dashboard}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h2 style="color: var(--primary-bg);"><i class="fas fa-calendar-check" style="margin-right: 10px; color: var(--accent-color);"></i>My Attendance Report</h2>
+                <p style="font-size: 0.85rem; color: var(--text-dim);" th:text="'Student ID: ' + ${session.loggedInUser.username}"></p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-weight: bold; color: var(--accent-color); font-size: 1.4rem;" th:text="${percent} + '%'">0%</span>
+                <p style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Overall Presence</p>
+            </div>
+        </div>
+
+        <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 80px;">S/N</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="att, iterStat : ${attendanceList}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${att.attendanceDate}">2026-04-02</td>
+                    <td>
+                        <span th:class="${att.status == 'PRESENT' ? 'status-pill status-present' : 'status-pill status-absent'}"
+                              th:text="${att.status}">
+                            STATUS
+                        </span>
+                    </td>
+                </tr>
+                
+                <tr th:if="${#lists.isEmpty(attendanceList)}">
+                    <td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">
+                        <i class="fas fa-info-circle" style="display: block; font-size: 2rem; margin-bottom: 10px;"></i>
+                        Bado hakuna mahudhurio yaliyorekodiwa kwenye mfumo.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+</body>
+</html>

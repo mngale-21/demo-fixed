@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Health Information System</title>
+    <style>
+        /* PART 2 & 5: BASIC & ADVANCED CSS */
+        :root {
+            --primary: #0284c7;
+            --secondary: #0f172a;
+            --accent: #38bdf8;
+            --light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--secondary);
+        }
+
+        /* PART 4: CSS GRID LAYOUT */
+        .container {
+            display: grid;
+            grid-template-areas: 
+                "header"
+                "nav"
+                "content"
+                "footer";
+            grid-template-columns: 1fr;
+            min-height: 100vh;
+        }
+
+        /* PART 3: FLEXBOX FOR NAVIGATION */
+        header {
+            grid-area: header;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            animation: slideDown 0.8s ease-out; /* Advanced Animation */
+        }
+
+        nav {
+            grid-area: nav;
+            background-color: var(--secondary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex; /* Flexbox */
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: block;
+            transition: 0.3s; /* Transition */
+        }
+
+        nav ul li a:hover {
+            background-color: var(--accent);
+            color: var(--secondary);
+        }
+
+        /* MAIN CONTENT AREA */
+        .main-wrapper {
+            grid-area: content;
+            display: flex; /* Flexbox for Sidebar and Main */
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        main {
+            flex: 3;
+        }
+
+        /* SECTION & ARTICLE STYLING */
+        section {
+            margin-bottom: 30px;
+        }
+
+        .article-grid {
+            display: flex; /* Flexbox to arrange articles side-by-side */
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        article {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 250px;
+            transition: transform 0.3s;
+        }
+
+        article:hover {
+            transform: translateY(-10px); /* Hover Effect */
+            border-bottom: 4px solid var(--primary);
+        }
+
+        /* SIDEBAR STYLING */
+        aside {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            height: fit-content;
+            border-left: 5px solid var(--accent);
+        }
+
+        /* ADVANCED SELECTORS */
+        .quick-links li:nth-child(odd) {
+            background-color: #f1f5f9;
+        }
+
+        footer {
+            grid-area: footer;
+            background-color: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* KEYFRAMES ANIMATION */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* PART 5: RESPONSIVE DESIGN (Media Queries) */
+        @media (min-width: 768px) {
+            .main-wrapper {
+                flex-direction: row;
+            }
+            
+            .container {
+                grid-template-areas: 
+                    "header header"
+                    "nav nav"
+                    "content aside"
+                    "footer footer";
+                grid-template-columns: 3fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Afya-Jamii System</h1>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-wrapper">
+            <main>
+                <section>
+                    <h2>Health Services</h2>
+                    <div class="article-grid">
+                        <article>
+                            <h3>Maternal Care</h3>
+                            <p>Providing essential health services for mothers and newborns in our community.</p>
+                        </article>
+                        <article>
+                            <h3>Child Vaccination</h3>
+                            <p>Check the latest schedule for routine immunization for children under five.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Community News</h2>
+                    <div class="article-grid">
+                        <article>
+                            <h3>Nutrition Workshop</h3>
+                            <p>Join us this Friday to learn about balanced diets and local food processing.</p>
+                        </article>
+                    </div>
+                </section>
+            </main>
+
+            <aside>
+                <h3>Announcements</h3>
+                <ul class="quick-links" style="list-style: none; padding: 0;">
+                    <li style="padding: 10px;">📌 New Clinic Opening</li>
+                    <li style="padding: 10px;">📅 Blood Drive - June 10</li>
+                    <li style="padding: 10px;">💧 Clean Water Seminar</li>
+                </ul>
+                <button style="width: 100%; padding: 10px; background: var(--primary); color: white; border: none; cursor: pointer;">Register Now</button>
+            </aside>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Community Health Information System. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

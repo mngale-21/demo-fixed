@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Attendance Sync | Amateur Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;    /* Deep Navy */
+            --secondary-dark: #1e293b;  /* Sidebar/Card Navy */
+            --accent-blue: #38bdf8;     /* Sky Blue */
+            --text-main: #f1f5f9;       /* Off White */
+            --text-dim: #94a3b8;        /* Muted Gray */
+            --success-green: #10b981;   /* Emerald */
+            --danger-red: #f87171;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: var(--secondary-dark);
+            height: 100vh;
+            padding: 25px;
+            position: fixed;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar h2 {
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+            transition: 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .main {
+            margin-left: 260px;
+            flex: 1;
+            padding: 50px;
+        }
+
+        .header { margin-bottom: 40px; }
+        .header h1 { font-size: 2.2rem; margin: 0; font-weight: 700; }
+        .header p { color: var(--text-dim); margin-top: 10px; }
+        
+        .upload-card {
+            background: var(--secondary-dark);
+            border-radius: 20px;
+            padding: 45px;
+            max-width: 650px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        .info-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(56, 189, 248, 0.05);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 8px;
+        }
+
+        .info-box h4 { margin: 0 0 10px 0; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
+        .info-box ul { margin: 0; padding-left: 20px; color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; }
+
+        .drop-zone {
+            border: 2px dashed #475569;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: 0.4s;
+            background: rgba(15, 23, 42, 0.5);
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .drop-zone i { font-size: 3rem; color: var(--accent-blue); margin-bottom: 15px; }
+
+        .btn-execute {
+            background: var(--accent-blue);
+            color: var(--primary-dark);
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-execute:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .status-msg { margin-top: 15px; font-weight: 600; color: var(--success-green); }
+
+        /* Table Log Style */
+        .log-container { margin-top: 40px; }
+        .log-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--secondary-dark); border-radius: 15px; overflow: hidden; }
+        .log-table th { background: rgba(255,255,255,0.05); padding: 15px; text-align: left; color: var(--accent-blue); font-size: 0.85rem; }
+        .log-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+        .status-pill { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
+        .pill-PRESENT { background: var(--success-green); color: white; }
+        .pill-ABSENT { background: var(--danger-red); color: white; }
+
+        .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        /* ===== RESPONSIVE: TABLET ===== */
+        @media (max-width: 992px) {
+            .main { padding: 30px; }
+            .upload-card { max-width: 100%; }
+        }
+
+        /* ===== RESPONSIVE: MOBILE ===== */
+        @media (max-width: 768px) {
+            body { display: block; }
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px;
+                padding: 15px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .sidebar h2 { width: 100%; margin-bottom: 10px; font-size: 1.2rem; }
+            .nav-link { padding: 10px 12px; margin-bottom: 0; font-size: 0.85rem; }
+            .main { margin-left: 0; padding: 20px; }
+            .header h1 { font-size: 1.6rem; }
+            .upload-card { padding: 25px; }
+            .drop-zone { padding: 25px; }
+            .log-table th, .log-table td { padding: 10px; font-size: 0.8rem; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2><i class="fas fa-bolt"></i> AMATEUR PRO</h2>
+        <nav>
+            <a href="/admin_dashboard" class="nav-link"><i class="fas fa-th-large"></i> Overview</a>
+            <a th:href="@{/admin/upload_results}" class="nav-link"><i class="fas fa-file-csv"></i> Results Upload</a>
+            <a href="#" class="nav-link active"><i class="fas fa-calendar-check"></i> Attendance Sync</a>
+            <a href="#" class="nav-link"><i class="fas fa-chart-pie"></i> Analytics</a>
+            <a href="/logout" class="nav-link" style="margin-top: 100px; color: var(--danger-red);"><i class="fas fa-power-off"></i> Sign Out</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h1>Sync Daily Attendance</h1>
+            <p>Upload Excel sheets to automate daily student presence tracking with auto-timestamping.</p>
+        </div>
+
+        <div class="upload-card">
+            <form th:action="@{/admin/upload_attendance}" method="post" enctype="multipart/form-data">
+                
+                <div class="info-box">
+                    <h4><i class="fas fa-fingerprint"></i> Smart Sync Enabled</h4>
+                    <ul>
+                        <li>Data uploaded will be stamped with <strong>Today's Date</strong> automatically.</li>
+                        <li>Format required: <strong>.xlsx</strong> (Excel Workbook).</li>
+                    </ul>
+                </div>
+
+                <div class="drop-zone" onclick="document.getElementById('attFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Select Attendance Sheet</h3>
+                    <p>Drag and drop or click to browse</p>
+                    <input type="file" name="file" id="attFile" accept=".xlsx" required style="display: none;">
+                    <div id="file-status" class="status-msg"></div>
+                </div>
+
+                <div class="info-box" style="border-left-color: #94a3b8; background: transparent;">
+                    <h4><i class="fas fa-table"></i> Required Columns:</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-dim);">
+                        <strong>A:</strong> Student ID &nbsp;|&nbsp; <strong>B:</strong> Status (PRESENT/ABSENT)
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-execute">
+                    Execute Attendance Sync
+                </button>
+            </form>
+
+            <div th:if="${param.attendance_success}" class="status-msg">
+                <i class="fas fa-check-circle"></i> Sync Completed Successfully!
+            </div>
+        </div>
+
+        <div class="log-container">
+            <h3><i class="fas fa-list-ul"></i> Today's Activity Log</h3>
+            <div class="table-scroll">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>STUDENT ID</th>
+                        <th>TIME STAMP</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="att : ${recentAttendance}">
+                        <td th:text="${att.username}">T24-03-XXXX</td>
+                        <td th:text="${att.attendanceDate}">2026-04-02</td>
+                        <td>
+                            <span th:class="'status-pill pill-' + ${att.status}" th:text="${att.status}">STATUS</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(recentAttendance)}">
+                        <td colspan="3" style="text-align: center; color: var(--text-dim); padding: 30px;">No sync activities detected today.</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('attFile').onchange = function() {
+            if (this.files.length > 0) {
+                document.getElementById('file-status').innerHTML =
+                    "<i class='fas fa-file-excel'></i> Ready: " + this.files[0].name;
+            }
+        };
+    </script>
+</body>
+</html>

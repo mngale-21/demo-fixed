@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Profile | Amateur Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root { 
+            --primary-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --accent-color: #38bdf8; 
+            --text-main: #f1f5f9; 
+            --text-dim: #94a3b8; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { 
+            background-color: var(--primary-bg); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            background: var(--card-bg); 
+            width: 100%; 
+            max-width: 600px; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            border-top: 4px solid var(--accent-color); 
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 10px; }
+        .header p { color: var(--text-dim); font-size: 0.9rem; }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .full-width { grid-column: span 2; }
+        
+        label { display: block; font-size: 0.75rem; margin-bottom: 8px; color: var(--text-dim); text-transform: uppercase; font-weight: bold; }
+        input { 
+            width: 100%; 
+            padding: 12px 15px; 
+            background: var(--primary-bg); 
+            border: 1px solid #334155; 
+            border-radius: 8px; 
+            color: white; 
+            outline: none; 
+            transition: 0.3s; 
+        }
+        input:focus { border-color: var(--accent-color); box-shadow: 0 0 5px rgba(56, 189, 248, 0.3); }
+        
+        .btn-submit { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--accent-color); 
+            color: var(--primary-bg); 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 10px; 
+            text-transform: uppercase;
+        }
+        .btn-submit:hover { background: #0ea5e9; transform: translateY(-2px); }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--text-dim); text-decoration: none; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-user-edit" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px;"></i>
+            <h2 th:text="#{profile.complete.title}">Kamilisha Wasifu</h2>
+            <p th:text="#{profile.complete.subtitle}">Tafadhali jaza taarifa zako za makazi na mawasiliano.</p>
+        </div>
+
+        <form th:action="@{/update_profile}" method="POST" id="profileForm">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" name="email" placeholder="mfano@gmail.com" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label><i class="fas fa-phone"></i> Parent/Guardian Number</label>
+                    <input type="text" name="parentNumber" placeholder="07XXXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Region</label>
+                    <input type="text" name="region" placeholder="Mkoa" required>
+                </div>
+
+                <div class="form-group">
+                    <label>District</label>
+                    <input type="text" name="district" placeholder="Wilaya" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ward</label>
+                    <input type="text" name="ward" placeholder="Kata" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Street</label>
+                    <input type="text" name="street" placeholder="Mtaa" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>House Number</label>
+                    <input type="text" name="houseNumber" placeholder="Namba ya Nyumba">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" th:text="#{btn.save.info}">SAVE INFORMATION</button>
+        </form>
+
+        <a th:href="@{/student_dashboard}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+
+    <script th:inline="javascript">
+        // Angalia kama kuna parameter ya 'success' kwenye URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            Swal.fire({
+                title: 'Successfully Saved!',
+                text: 'Taarifa zako zimehifadhiwa kikamilifu.',
+                icon: 'success',
+                confirmButtonColor: '#38bdf8',
+                background: '#1e293b',
+                color: '#f1f5f9'
+            });
+        }
+
+        // Optional: Kama unataka kuonyesha tik kabla ya kurefresh (Frontend only test)
+        /*
+        document.getElementById('profileForm').addEventListener('submit', function() {
+            // Hapa fomu itaji-submit kwenda kwa Controller
+        });
+        */
+    </script>
+</body>
+</html>

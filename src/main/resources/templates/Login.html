@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Amateur System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: #020617; 
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px 0 70px 0;
+        }
+
+        /* Background Glow */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+            top: -200px;
+            left: -200px;
+            z-index: 0;
+        }
+
+        .main-wrapper {
+            display: flex;
+            width: 90vw;
+            max-width: 1150px;
+            min-height: 600px;
+            background: rgba(15, 23, 42, 0.95); 
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1;
+        }
+
+        /* UPANDE WA KUSHOTO */
+        .left-side {
+            flex: 1.4; 
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .left-side h1 { font-size: 3.2rem; margin-bottom: 20px; font-weight: 800; letter-spacing: -1.5px; }
+        .left-side p { font-size: 1.15rem; opacity: 0.9; line-height: 1.6; max-width: 85%; }
+
+        .student-img {
+            width: 420px; 
+            margin-top: 40px;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 35px 50px rgba(0,0,0,0.4));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        /* UPANDE WA KULIA (LOGIN) */
+        .right-side {
+            flex: 1.1; /* Panua kidogo hapa ili ku-match */
+            padding: 50px 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: rgba(10, 15, 30, 0.5);
+        }
+
+        /* LOGO YENYE DUARA NA UKUBWA */
+        .logo-container {
+            width: 165px; 
+            height: 165px;
+            margin: 0 auto 25px auto;
+            position: relative;
+            padding: 5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .login-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%; /* Inatengeneza duara */
+        }
+
+        .lang-selector {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 0.85rem;
+        }
+        .lang-btn { color: #94a3b8; text-decoration: none; font-weight: 700; transition: 0.3s; }
+        .lang-btn:hover { color: #38bdf8; }
+
+        h2 { 
+            color: #f8fafc; 
+            margin-bottom: 35px; 
+            text-align: center;
+            font-size: 1.8rem; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group { margin-bottom: 22px; }
+
+        input { 
+            width: 100%; 
+            padding: 18px 20px; 
+            border: 1px solid #334155; 
+            border-radius: 14px; 
+            background: #020617; 
+            color: white; 
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:focus { 
+            border-color: #38bdf8; 
+            background: rgba(56, 189, 248, 0.05);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); 
+        }
+
+        .password-wrapper { position: relative; }
+        .toggle-eye {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            background: #38bdf8; 
+            color: #0f172a; 
+            border: none; 
+            border-radius: 14px; 
+            cursor: pointer; 
+            font-weight: 800; 
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover { 
+            background-color: #7dd3fc; 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 30px rgba(56, 189, 248, 0.3);
+        }
+
+        .forgot-pass {
+            margin-top: 30px;
+            display: block;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .forgot-pass:hover { color: #38bdf8; }
+
+        .page-footer {
+            position: absolute;
+            bottom: 25px;
+            color: #475569;
+            font-size: 0.85rem;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 0.5px;
+        }
+
+        .error-msg { 
+            color: #fb7185; 
+            font-size: 0.9rem; 
+            background: rgba(251, 113, 133, 0.1); 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            border-left: 5px solid #fb7185;
+            text-align: center;
+        }
+
+        /* ===== RESPONSIVE: TABLET ===== */
+        @media (max-width: 992px) {
+            .main-wrapper { width: 94vw; }
+            .left-side { padding: 40px 30px; }
+            .left-side h1 { font-size: 2.4rem; }
+            .student-img { width: 280px; }
+            .right-side { padding: 40px 40px; }
+        }
+
+        /* ===== RESPONSIVE: MOBILE ===== */
+        @media (max-width: 700px) {
+            body { padding: 16px 0 60px 0; }
+            .main-wrapper {
+                flex-direction: column;
+                width: 92vw;
+                min-height: unset;
+            }
+            .left-side { padding: 35px 25px; }
+            .left-side h1 { font-size: 2rem; }
+            .left-side p { font-size: 1rem; max-width: 100%; }
+            .student-img { width: 200px; margin-top: 25px; }
+            .right-side { padding: 35px 25px; }
+            .lang-selector { position: static; text-align: center; margin-bottom: 15px; }
+            .logo-container { width: 120px; height: 120px; }
+            h2 { font-size: 1.5rem; margin-bottom: 25px; }
+            input, button { padding: 15px 16px; }
+            .page-footer { position: static; margin-top: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div class="left-side">
+            <h1>Amateur System</h1>
+            <p>Empowering the next generation of scholars through seamless record management and data-driven insights.</p>
+            <img src="/images/Mwanafunzi.jpg" alt="Academic Excellence" class="student-img">
+        </div>
+
+        <div class="right-side">
+            <div class="lang-selector">
+                <a th:href="@{/(lang='en')}" class="lang-btn">ENGLISH</a> | 
+                <a th:href="@{/(lang='sw')}" class="lang-btn">KISWAHILI</a>
+            </div>  
+
+            <!-- LOGO CONTAINER YENYE DUARA -->
+            <div class="logo-container">
+                <img src="/images/logo.png" alt="Amateur Focus Logo" class="login-logo">
+            </div>
+
+            <h2>Sign In</h2>
+            
+            <div th:if="${param.error}" class="error-msg">
+                Invalid Registration Number or Password.
+            </div>
+
+            <form th:action="@{/login}" method="POST">
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Registration Number" required autocomplete="off">
+                </div>
+                
+                <div class="input-group password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <span class="toggle-eye" onclick="togglePassword()" id="eyeIcon">SHOW</span>
+                </div>
+                
+                <button type="submit">LOG INTO SYSTEM</button>
+            </form>
+
+            <a href="/forgot_password" class="forgot-pass">Forgot your access credentials?</a>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        &copy; 2026 Amateur System | <span style="color: #64748b;">Developed with Excellence by Evodi Phinnance</span>
+    </footer>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.textContent = 'HIDE';
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.textContent = 'SHOW';
+            }
+        }
+    </script>
+</body>
+</html>

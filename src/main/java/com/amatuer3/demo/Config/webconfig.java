@@ -1,0 +1,42 @@
+package com.amatuer3.demo.Config;
+
+
+
+import java.util.Locale;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+import java.util.Locale;
+
+@Configuration
+public class webconfig implements WebMvcConfigurer {
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        // SessionLocaleResolver inahakikisha lugha inabaki kote (General) 
+        // mpaka mtumiaji afunge browser.
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        slr.setDefaultLocale(Locale.ENGLISH); 
+        return slr;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+        lci.setParamName("lang"); // Hii inaruhusu kutumia ?lang=sw au ?lang=en
+        return lci;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // Hii inasikiliza kila request inayokuja kuona kama kuna parameter ya lugha
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+}
